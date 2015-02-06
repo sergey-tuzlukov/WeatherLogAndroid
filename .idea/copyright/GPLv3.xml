@@ -1,0 +1,9 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="WeatherLog is an app for logging air temperature changes and calculating&#10;total time of preset limits exceeding in the nearest past. The project&#10;began as a way to help moto-bikers decide if it is safe to drive in the morning&#10;after cold night, or for automobile owners to decide if it is time to change tires&#10;to/from winter ones. It also may be useful when man thinks about clothes/shoes&#10;to dress in this time, or in all other cases when there needs to analyze&#10;temperature's behaviour.&#10;&#10;Copyright © 2015 Sergey Tuzlukov &lt;s.tuzlukov@ya.ru&gt;.&#10;&#10;&#10;This file is part of WeatherLog.&#10;&#10;WeatherLog is free software: you can redistribute it and/or modify&#10;it under the terms of the GNU General Public License as published by&#10;the Free Software Foundation, either version 3 of the License, or&#10;(at your option) any later version.&#10;&#10;WeatherLog is distributed in the hope that it will be useful,&#10;but WITHOUT ANY WARRANTY; without even the implied warranty of&#10;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#10;GNU General Public License for more details.&#10;&#10;You should have received a copy of the GNU General Public License&#10;along with WeatherLog.  If not, see &lt;http://www.gnu.org/licenses/&gt;." />
+    <option name="keyword" value="Copyright" />
+    <option name="allowReplaceKeyword" value="" />
+    <option name="myName" value="GPLv3" />
+    <option name="myLocal" value="true" />
+  </copyright>
+</component>

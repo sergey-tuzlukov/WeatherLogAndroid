@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ WeatherLog is an app for logging air temperature changes and calculating
+  ~ total time of preset limits exceeding in the nearest past. The project
+  ~ began as a way to help moto-bikers decide if it is safe to drive in the morning
+  ~ after cold night, or for automobile owners to decide if it is time to change tires
+  ~ to/from winter ones. It also may be useful when man thinks about clothes/shoes
+  ~ to dress in this time, or in all other cases when there needs to analyze
+  ~ temperature's behaviour.
+  ~
+  ~ Copyright © 2015 Sergey Tuzlukov <s.tuzlukov@ya.ru>.
+  ~
+  ~
+  ~ This file is part of WeatherLog.
+  ~
+  ~ WeatherLog is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ WeatherLog is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with WeatherLog.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <string name="app_name">WeatherLog</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_about">About</string>
+    <string name="plot_title">Past 24-hours temperature changes</string>
+    <string name="period_label">Period</string>
+    <string name="total_time_label">Total time when temperature was below</string>
+    <string name="past_period_label">of the past</string>
+    <string name="past_period_1_caption">12 hours</string>
+    <string name="past_period_2_caption">24 hours</string>
+    <string name="celsius_degree_caption">°C</string>
+    <string name="hours_caption">h.</string>
+    <string name="day_temperature_span_label">24-hours temperature span: %.1f°C</string>
+    <string name="day_average_temperature_label">Average 24-hours temperature: %.1f°C</string>
+    <string name="day_median_temperature_label">Median 24-hours temperature: %.1f°C</string>
+    <string name="response_error_message">No response from server. Please, check the Internet connection.</string>
+    <string name="no_data_error_message">No weather data found for current city.</string>
+
+    <string name="title_activity_settings">WeatherLog settings</string>
+    <string name="current_city_selected_label">Current city: %1$s [%2$s]\ncity_id=%3$d\n{lat=%4$.6f; lon=%5$.6f}</string>
+    <string name="find_city_label">Find city (use English)</string>
+    <string name="find_city_hint">City name, full or part</string>
+    <string name="no_city_found_error_message">No city found for your query</string>
+    <string name="city_changed_message">City changed</string>
+
+    <string name="title_activity_about">About WeatherLog</string>
+    <string name="description_text"><b>WeatherLog</b> is an app that shows, how changed an air temperature within previous 24 hours.
+        \nThe application helps to answer, if the road was icing up after cold night; is it a time to change tires to/from winter ones;
+        what kind of clothes or shoes would be well to wear today. Also it may be useful in any other cases, when there needs to monitor
+        temperature changes and analyze them.</string>
+    <string name="about_license_text"><b>WeatherLog</b> is distributed under the terms of
+        <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU GPLv3</a>.</string>
+    <string name="about_weather_provider_text">All weather data are provided by <a href="http://openweathermap.org/">OpenWeatherMap</a>
+        server.</string>
+    <string name="about_getting_sources_text">The source code of this application is available on
+        https://github.com/sergey-tuzlukov/WeatherLogAndroid</string>
+    <string name="copyright_info_text">Copyright © 2015 <a href="mailto:serg.tuzlukov@gmail.com">Sergey Tuzlukov</a></string>
+
+</resources>

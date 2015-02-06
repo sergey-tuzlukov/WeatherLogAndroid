@@ -1,0 +1,196 @@
+<!--
+  ~ WeatherLog is an app for logging air temperature changes and calculating
+  ~ total time of preset limits exceeding in the nearest past. The project
+  ~ began as a way to help moto-bikers decide if it is safe to drive in the morning
+  ~ after cold night, or for automobile owners to decide if it is time to change tires
+  ~ to/from winter ones. It also may be useful when man thinks about clothes/shoes
+  ~ to dress in this time, or in all other cases when there needs to analyze
+  ~ temperature's behaviour.
+  ~
+  ~ Copyright © 2015 Sergey Tuzlukov <s.tuzlukov@ya.ru>.
+  ~
+  ~
+  ~ This file is part of WeatherLog.
+  ~
+  ~ WeatherLog is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ WeatherLog is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with WeatherLog.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/llLoader"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/loader_background_color">
+        <ProgressBar
+            android:indeterminate="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout
+        android:id="@+id/ptr_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:text="@string/plot_title"/>
+
+                <com.jjoe64.graphview.GraphView
+                    android:id="@+id/graph"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/plot_height"
+                    android:background="@color/plot_background_color"
+                    android:layout_marginStart="@dimen/plot_horizontal_correction_margin"
+                    android:layout_marginLeft="@dimen/plot_horizontal_correction_margin"
+                    android:layout_marginTop="@dimen/table_vertical_margin"
+                    android:layout_marginBottom="@dimen/table_vertical_margin"/>
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="*"
+                    android:shrinkColumns="1,2"
+                    android:layout_marginTop="@dimen/table_vertical_margin"
+                    android:layout_marginBottom="@dimen/table_vertical_margin">
+                    <TableRow>
+                        <TextView
+                            android:text="@string/period_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="@string/total_time_label"
+                            android:layout_marginLeft="@dimen/table_horizontal_margin"
+                            android:layout_marginStart="@dimen/table_horizontal_margin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"/>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="@string/past_period_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:id="@+id/tvTemperatureLimit2"
+                            android:text="0&#176;C"
+                            android:layout_marginLeft="@dimen/table_horizontal_margin"
+                            android:layout_marginStart="@dimen/table_horizontal_margin"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold|italic"/>
+                        <TextView
+                            android:id="@+id/tvTemperatureLimit1"
+                            android:text="+5&#176;C"
+                            android:layout_marginLeft="@dimen/table_horizontal_margin"
+                            android:layout_marginStart="@dimen/table_horizontal_margin"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold|italic"/>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="@string/past_period_1_caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold|italic"/>
+                        <TextView
+                            android:id="@+id/tvTime1Limit2"
+                            android:text="-"
+                            android:layout_marginLeft="@dimen/table_horizontal_margin"
+                            android:layout_marginStart="@dimen/table_horizontal_margin"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/tvTime1Limit1"
+                            android:text="-"
+                            android:layout_marginLeft="@dimen/table_horizontal_margin"
+                            android:layout_marginStart="@dimen/table_horizontal_margin"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"/>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="@string/past_period_2_caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold|italic"/>
+                        <TextView
+                            android:id="@+id/tvTime2Limit2"
+                            android:text="-"
+                            android:layout_marginLeft="@dimen/table_horizontal_margin"
+                            android:layout_marginStart="@dimen/table_horizontal_margin"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/tvTime2Limit1"
+                            android:text="-"
+                            android:layout_marginLeft="@dimen/table_horizontal_margin"
+                            android:layout_marginStart="@dimen/table_horizontal_margin"
+                            android:layout_weight="0.5"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"/>
+                    </TableRow>
+                </TableLayout>
+                <TextView
+                    android:id="@+id/tvDayTemperatureSpan"
+                    android:text="@string/day_temperature_span_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/tvDayAverageTemperature"
+                    android:text="@string/day_average_temperature_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/tvDayMedianTemperature"
+                    android:text="@string/day_median_temperature_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </ScrollView>
+    </uk.co.senab.actionbarpulltorefresh.extras.actionbarcompat.PullToRefreshLayout>
+
+</LinearLayout>

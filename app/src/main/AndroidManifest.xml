@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ WeatherLog is an app for logging air temperature changes and calculating
+  ~ total time of preset limits exceeding in the nearest past. The project
+  ~ began as a way to help moto-bikers decide if it is safe to drive in the morning
+  ~ after cold night, or for automobile owners to decide if it is time to change tires
+  ~ to/from winter ones. It also may be useful when man thinks about clothes/shoes
+  ~ to dress in this time, or in all other cases when there needs to analyze
+  ~ temperature's behaviour.
+  ~
+  ~ Copyright © 2015 Sergey Tuzlukov <s.tuzlukov@ya.ru>.
+  ~
+  ~
+  ~ This file is part of WeatherLog.
+  ~
+  ~ WeatherLog is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ WeatherLog is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with WeatherLog.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ru.moscow.tuzlukov.sergey.weatherlog" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.moscow.tuzlukov.sergey.weatherlog.MainActivity" />
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.moscow.tuzlukov.sergey.weatherlog.MainActivity" />
+        </activity>
+    </application>
+
+</manifest>
