@@ -25,7 +25,7 @@ In the list of found cities there are also geo coords (in decimal view) and Open
 1) the end of temperature curve represents the temperature now, the begin of curve represents the temperature at
 24 hours before from now (e.g., if current time is 15:42, 8-th Feb., hence, this time is at right side of plot, 
 and the left side of plot is at 15:42 at 7-th Feb.);<br/>
-2) the total time when temperature was below 0- or 5- degrees limits is calculated as a sum of all such 
+2) the total time when temperature was below 0- or 5-degrees limits is calculated as a sum of all such
 time segments at whole time diapason (previous 12 and 24 hours before current time);<br/>
 3) temperature span is a difference between max and min temperatures from requested array of key points, 
 at previous 24 hours;<br/>
@@ -46,7 +46,7 @@ per hour/day, so you can be blocked for a day using WeatherLog. If it happens, t
 <p><b>Third-party resources</b><br/>
 WeatherLog is in fact a client-side app for OpenWeatherMap service. So you can use it only if this service 
 is available.<br/>
-Weather log uses these 3rd-party services and libraries:
+WeatherLog uses these 3rd-party services and libraries:
 <ul>
 <li><a href="http://openweathermap.org">OpenWeatherMap API</a></li>
 <li><a href="https://github.com/mcxiaoke/android-volley">Google Volley (github clone)</a></li>
