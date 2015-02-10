@@ -40,7 +40,7 @@
     <string name="past_period_2_caption">24 часа</string>
     <string name="celsius_degree_caption">°C</string>
     <string name="hours_caption">ч.</string>
-    <string name="day_temperature_span_label">Суточный разброс температур: %.1f°C</string>
+    <string name="day_temperature_span_label">Суточный перепад температур: %.1f°C</string>
     <string name="day_average_temperature_label">Средняя суточная температура: %.1f°C</string>
     <string name="day_median_temperature_label">Медианная суточная температура: %.1f°C</string>
     <string name="response_error_message">Сервер не отвечает. Пожалуйста, проверьте соединение с Интернетом.</string>
