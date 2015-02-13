@@ -55,6 +55,14 @@ WeatherLog uses these 3rd-party services and libraries:
 </ul>
 </p>
 
+<p><b>APK download links</b><br/>
+You can also install the app with pre-assembled .apk files from these stores:
+<ul>
+<li><a href="https://play.google.com/store/apps/details?id=ru.moscow.tuzlukov.sergey.weatherlog">on Google Play&#8482;</a></li>
+<li><a href="https://f-droid.org/repository/browse/?fdid=ru.moscow.tuzlukov.sergey.weatherlog">on F-Droid</a></li>
+</ul>
+</p>
+
 <hr/>
 
 #License
