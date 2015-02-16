@@ -33,7 +33,14 @@
     <dimen name="table_horizontal_margin">16dp</dimen>
     <dimen name="table_vertical_margin">8dp</dimen>
     <dimen name="plot_height">210dp</dimen>
-    <dimen name="plot_horizontal_correction_margin">-8dp</dimen>
+    <dimen name="plot_horizontal_correction_margin">-18dp</dimen>
+    <dimen name="plot_vertical_correction_margin">2dp</dimen>
+    <dimen name="horizontal_labels_margin_top">-26dp</dimen>
+    <dimen name="horizontal_labels_margin_left">16dp</dimen>
+    <dimen name="horizontal_labels_margin_right">16dp</dimen>
+    <dimen name="horizontal_labels_margin_bottom">16dp</dimen>
+    <dimen name="horizontal_zero_label_margin_top">-18dp</dimen>
+    <dimen name="horizontal_zero_label_margin_right">4dp</dimen>
 
     <dimen name="text_vertical_margin">8dp</dimen>
 
