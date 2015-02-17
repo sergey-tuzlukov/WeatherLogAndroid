@@ -32,9 +32,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="table_horizontal_margin">16dp</dimen>
     <dimen name="table_vertical_margin">8dp</dimen>
-    <dimen name="plot_height">210dp</dimen>
+    <dimen name="plot_height">216dp</dimen>
     <dimen name="plot_horizontal_correction_margin">-18dp</dimen>
-    <dimen name="plot_vertical_correction_margin">2dp</dimen>
+    <dimen name="plot_vertical_correction_margin">6dp</dimen>
     <dimen name="horizontal_labels_margin_top">-26dp</dimen>
     <dimen name="horizontal_labels_margin_left">16dp</dimen>
     <dimen name="horizontal_labels_margin_right">16dp</dimen>

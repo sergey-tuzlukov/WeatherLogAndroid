@@ -373,34 +373,36 @@ public class MainActivity extends ActionBarActivity {
         int numVerticalLabels = (int) (highLimit - lowLimit) / 5 + 1;
         numVerticalLabels = numVerticalLabels < 2 ? 2 : numVerticalLabels;
         gridLabelRenderer.setNumVerticalLabels(numVerticalLabels);
-        gridLabelRenderer.setTextSize(gridLabelRenderer.getTextSize() - 2); //make text a bit smaller
         viewport.setMinY(lowLimit);
         viewport.setMaxY(highLimit);
         viewport.setYAxisBoundsManual(true);
         //set horizontal labels:
         LinearLayout llHorizontalLabels = (LinearLayout) findViewById(R.id.llHorizontalLabels);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) llHorizontalLabels.getLayoutParams();
-        params.bottomMargin = 0;
-        llHorizontalLabels.setLayoutParams(params);
-        for (int n = -24; n < 0; n += 3) {
-            TextView textView = new TextView(MainActivity.this);
-            textView.setText(String.valueOf(n));
-            textView.setGravity(Gravity.LEFT);
-            textView.setSingleLine();
-            params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f / 8.0f);
-            textView.setLayoutParams(params);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, gridLabelRenderer.getTextSize());
-            textView.setTextColor(gridLabelRenderer.getVerticalLabelsColor());
-            llHorizontalLabels.addView(textView);
+        if (llHorizontalLabels.getChildCount() == 0) {
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) llHorizontalLabels.getLayoutParams();
+            params.bottomMargin = 0;
+            llHorizontalLabels.setLayoutParams(params);
+            gridLabelRenderer.setTextSize(gridLabelRenderer.getTextSize() - 2); //make text a bit smaller
+            for (int n = -24; n < 0; n += 3) {
+                TextView textView = new TextView(MainActivity.this);
+                textView.setText(String.valueOf(n));
+                textView.setGravity(Gravity.START);
+                textView.setSingleLine();
+                params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f / 8.0f);
+                textView.setLayoutParams(params);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, gridLabelRenderer.getTextSize());
+                textView.setTextColor(gridLabelRenderer.getVerticalLabelsColor());
+                llHorizontalLabels.addView(textView);
+            }
+            TextView tvZeroLabel = (TextView) findViewById(R.id.tvZeroLabel);
+            tvZeroLabel.setText("-0 " + getString(R.string.hours_caption));
+            tvZeroLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, gridLabelRenderer.getTextSize());
+            tvZeroLabel.setTextColor(gridLabelRenderer.getVerticalLabelsColor());
+            tvZeroLabel.setVisibility(View.VISIBLE);
+            gridLabelRenderer.setPadding(gridLabelRenderer.getPadding() + 2); //make plot a bit smaller
         }
-        TextView tvZeroLabel = (TextView) findViewById(R.id.tvZeroLabel);
-        tvZeroLabel.setText("-0 " + getString(R.string.hours_caption));
-        tvZeroLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, gridLabelRenderer.getTextSize());
-        tvZeroLabel.setTextColor(gridLabelRenderer.getVerticalLabelsColor());
-        tvZeroLabel.setVisibility(View.VISIBLE);
-        gridLabelRenderer.setPadding(gridLabelRenderer.getPadding() + 2); //make plot a bit smaller
     }
 
     private long calculateTotalTimeLessThan(double temperatureLimit, long timeLeftLimit) {

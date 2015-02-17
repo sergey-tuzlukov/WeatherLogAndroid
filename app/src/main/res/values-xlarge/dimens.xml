@@ -27,5 +27,5 @@
   -->
 
 <resources>
-    <dimen name="plot_height">335dp</dimen>
+    <dimen name="plot_height">340dp</dimen>
 </resources>
