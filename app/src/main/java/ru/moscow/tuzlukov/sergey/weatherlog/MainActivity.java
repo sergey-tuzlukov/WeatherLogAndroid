@@ -31,6 +31,7 @@ package ru.moscow.tuzlukov.sergey.weatherlog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -53,6 +54,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -76,6 +80,11 @@ public class MainActivity extends ActionBarActivity {
     private static final String SAVED_CURRENT_GAINED = "SAVED_CURRENT_GAINED";
     private static final String SAVED_HISTORY_GAINED = "SAVED_HISTORY_GAINED";
     private static final String SAVED_LOADER_VISIBILITY = "SAVED_LOADER_VISIBILITY";
+    private static final String CACHE_TIMESTAMP = "CACHE_TIMESTAMP";
+    private static final String CACHED_MAP_FILE = "cached_map_file.dat";
+    private static final long CACHE_EXPIRE_TIME = 15 * 60 * 1000; //15 min.
+//    private static final long CACHE_QUICK_REFRESH_TIME = 1500; //1.5 sec.
+    private static final int FAKE_REFRESH_DELAY = 300; //should be less, than CACHE_QUICK_REFRESH_TIME
     private static final int REQUEST_SETTINGS = 0;
 
     private final double temperatureLimit1 = +5.0;
@@ -89,6 +98,8 @@ public class MainActivity extends ActionBarActivity {
     private long currentTime, currentTimeMinus12h, currentTimeMinus24h;
     private boolean currentIsGained = false, historyIsGained = false;
     private Map<Long, Double> temperatureMap = new TreeMap<>();
+    private long cachingTimestamp;
+//    private long lastPullToRefreshTime;
 
     private TextView tvTemperatureLimit1;
     private TextView tvTemperatureLimit2;
@@ -111,6 +122,7 @@ public class MainActivity extends ActionBarActivity {
 
         preferences = getSharedPreferences("preferences", MODE_PRIVATE);
         cityId = preferences.getInt(NetworkQuery.Params.ID, NetworkQuery.Defaults.CITY_ID);
+        cachingTimestamp = preferences.getLong(CACHE_TIMESTAMP, 0L);
 
         tvTemperatureLimit1 = (TextView) findViewById(R.id.tvTemperatureLimit1);
         tvTemperatureLimit2 = (TextView) findViewById(R.id.tvTemperatureLimit2);
@@ -132,6 +144,9 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void onRefreshStarted(View view) {
                         networkQuery.cancelAllRequests(MainActivity.this);
+//                        if (System.currentTimeMillis() < lastPullToRefreshTime + CACHE_QUICK_REFRESH_TIME)
+//                            cachingTimestamp = 0;
+//                        lastPullToRefreshTime = System.currentTimeMillis();
                         refreshWeatherData();
                     }
                 }
@@ -157,7 +172,7 @@ public class MainActivity extends ActionBarActivity {
                 temperatureMap.clear();
                 for (int i = 0; i < timeArray.length && i < tempArray.length; i++)
                     temperatureMap.put(timeArray[i], tempArray[i]);
-                processValues();
+                processValues(true);
             }
         }
     }
@@ -202,6 +217,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        preferences.edit().putLong(CACHE_TIMESTAMP, cachingTimestamp).apply();
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -227,6 +248,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SETTINGS && resultCode == RESULT_OK) {
             cityId = preferences.getInt(NetworkQuery.Params.ID, NetworkQuery.Defaults.CITY_ID);
+            cachingTimestamp = 0;
             refreshWeatherData();
         }
     }
@@ -258,6 +280,26 @@ public class MainActivity extends ActionBarActivity {
         long startTime = calendar.getTimeInMillis() / 1000;
 
         llLoader.setVisibility(View.VISIBLE);
+        if (!isCacheExpired())
+            try {
+                ObjectInputStream inputStream = new ObjectInputStream(openFileInput(CACHED_MAP_FILE));
+                Object loadedMap = inputStream.readObject();
+                inputStream.close();
+                temperatureMap.putAll((Map<Long, Double>) loadedMap);
+                currentIsGained = historyIsGained = true;
+                // Do "fake update": use delay to show progress animation correctly
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        processValues(true);
+                    }
+                }, FAKE_REFRESH_DELAY);
+                return;
+            }
+            catch (Exception e) {
+                temperatureMap.clear();
+                e.printStackTrace();
+            }
         currentIsGained = historyIsGained = false;
         networkQuery.addRequest(NetworkQuery.CURRENT_URL, new NetworkQuery.Params()
                 .addParam(NetworkQuery.Params.ID, cityId),
@@ -270,14 +312,23 @@ public class MainActivity extends ActionBarActivity {
                 responseHistoryListener, errorResponseListener, MainActivity.this);
     }
 
-    private void processValues() {
+    private void processValues(boolean useCached) {
         if (!(currentIsGained && historyIsGained))
             return;
+        if (temperatureMap.size() >= 2 && !useCached)
+            try {
+                ObjectOutputStream outputStream = new ObjectOutputStream(openFileOutput(CACHED_MAP_FILE, MODE_PRIVATE));
+                outputStream.writeObject(temperatureMap);
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         llLoader.setVisibility(View.GONE);
         ptrLayout.setRefreshComplete();
 
         if (temperatureMap.size() < 2) {
             Toast.makeText(MainActivity.this, getString(R.string.no_data_error_message), Toast.LENGTH_SHORT).show();
+            cachingTimestamp = 0;
             return;
         }
 
@@ -320,6 +371,9 @@ public class MainActivity extends ActionBarActivity {
         tvDayMedianTemperature.setText(String.format(getString(R.string.day_median_temperature_label), median));
 
         makePlot(sortedTempList.get(0), sortedTempList.get(sortedTempList.size() - 1));
+
+        if (!useCached)
+            cachingTimestamp = System.currentTimeMillis();
     }
 
     private void makePlot(double minTemp, double maxTemp) {
@@ -334,6 +388,7 @@ public class MainActivity extends ActionBarActivity {
         List<DataPoint> dataPoints = new ArrayList<>();
         for (Long time : temperatureMap.keySet())
             dataPoints.add(new DataPoint(time, temperatureMap.get(time)));
+        dataPoints.add(new DataPoint(currentTime, dataPoints.get(dataPoints.size() - 1).getY())); //fix for using data from cache
         LineGraphSeries<DataPoint> temperatureSeries = new LineGraphSeries<>(dataPoints.toArray(new DataPoint[dataPoints.size()]));
         LineGraphSeries<DataPoint> temperatureLimit1Series = new LineGraphSeries<>(new DataPoint[] {
                 new DataPoint(currentTimeMinus24h, temperatureLimit1),
@@ -479,6 +534,10 @@ public class MainActivity extends ActionBarActivity {
         return (temperature - b) / k;
     }
 
+    private boolean isCacheExpired() {
+        return System.currentTimeMillis() > cachingTimestamp + CACHE_EXPIRE_TIME;
+    }
+
 
     private Response.Listener<JSONObject> responseCurrentListener = new Response.Listener<JSONObject>() {
         @Override
@@ -490,7 +549,7 @@ public class MainActivity extends ActionBarActivity {
             long dt = response.optLong("dt"); //time of temperature registration can be not synchronized with time of request done
             temperatureMap.put(currentTime, currentTemp);
             currentIsGained = true;
-            processValues();
+            processValues(false);
         }
     };
 
@@ -512,7 +571,7 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(MainActivity.this, getString(R.string.response_error_message), Toast.LENGTH_SHORT).show();
                 historyIsGained = false;
             }
-            processValues();
+            processValues(false);
         }
     };
 
