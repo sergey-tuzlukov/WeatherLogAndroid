@@ -28,6 +28,7 @@
 
 package ru.moscow.tuzlukov.sergey.weatherlog;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -80,10 +81,12 @@ public class MainActivity extends ActionBarActivity {
     private static final String SAVED_CURRENT_GAINED = "SAVED_CURRENT_GAINED";
     private static final String SAVED_HISTORY_GAINED = "SAVED_HISTORY_GAINED";
     private static final String SAVED_LOADER_VISIBILITY = "SAVED_LOADER_VISIBILITY";
+    private static final String SAVED_DIALOG_APPID = "SAVED_DIALOG_APPID";
+    private static final String SAVED_DIALOG_VISIBILITY = "SAVED_DIALOG_VISIBILITY";
+    private static final String IS_FIRST_LAUNCH = "IS_FIRST_LAUNCH";
     private static final String CACHE_TIMESTAMP = "CACHE_TIMESTAMP";
     private static final String CACHED_MAP_FILE = "cached_map_file.dat";
     private static final long CACHE_EXPIRE_TIME = 15 * 60 * 1000; //15 min.
-//    private static final long CACHE_QUICK_REFRESH_TIME = 1500; //1.5 sec.
     private static final int FAKE_REFRESH_DELAY = 300; //should be less, than CACHE_QUICK_REFRESH_TIME
     private static final int REQUEST_SETTINGS = 0;
 
@@ -94,12 +97,12 @@ public class MainActivity extends ActionBarActivity {
     private NetworkQuery networkQuery;
     private int cityId;
     private static boolean refreshWasCancelled;
+    private SettingsActivity.RegisterDialog registerDialog;
 
     private long currentTime, currentTimeMinus12h, currentTimeMinus24h;
     private boolean currentIsGained = false, historyIsGained = false;
     private Map<Long, Double> temperatureMap = new TreeMap<>();
     private long cachingTimestamp;
-//    private long lastPullToRefreshTime;
 
     private TextView tvTemperatureLimit1;
     private TextView tvTemperatureLimit2;
@@ -144,18 +147,32 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public void onRefreshStarted(View view) {
                         networkQuery.cancelAllRequests(MainActivity.this);
-//                        if (System.currentTimeMillis() < lastPullToRefreshTime + CACHE_QUICK_REFRESH_TIME)
-//                            cachingTimestamp = 0;
-//                        lastPullToRefreshTime = System.currentTimeMillis();
                         refreshWeatherData();
                     }
                 }
         ).setup(ptrLayout);
 
+        String appId = preferences.getString(NetworkQuery.Params.APPID, "");
         networkQuery = NetworkQuery.getInstance(getApplicationContext());
+        networkQuery.setAppId(appId);
+
+        registerDialog = new SettingsActivity.RegisterDialog(this, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String appId = registerDialog.getEtAppId().getText().toString().trim();
+                networkQuery.setAppId(appId);
+                preferences.edit().putString(NetworkQuery.Params.APPID, appId).apply();
+                cachingTimestamp = 0;
+                refreshWeatherData();
+            }
+        });
 
         if (savedInstanceState == null) {
             refreshWeatherData();
+            if (preferences.getBoolean(IS_FIRST_LAUNCH, true)) {
+                registerDialog.show();
+                preferences.edit().putBoolean(IS_FIRST_LAUNCH, false).apply();
+            }
         }
         else {
             currentTime = savedInstanceState.getLong(SAVED_CURRENT_TIME);
@@ -173,6 +190,10 @@ public class MainActivity extends ActionBarActivity {
                 for (int i = 0; i < timeArray.length && i < tempArray.length; i++)
                     temperatureMap.put(timeArray[i], tempArray[i]);
                 processValues(true);
+            }
+            if (savedInstanceState.getBoolean(SAVED_DIALOG_VISIBILITY)) {
+                registerDialog.getEtAppId().setText(savedInstanceState.getString(SAVED_DIALOG_APPID));
+                registerDialog.show();
             }
         }
     }
@@ -197,6 +218,8 @@ public class MainActivity extends ActionBarActivity {
         outState.putBoolean(SAVED_CURRENT_GAINED, currentIsGained);
         outState.putBoolean(SAVED_HISTORY_GAINED, historyIsGained);
         outState.putBoolean(SAVED_LOADER_VISIBILITY, llLoader.getVisibility() == View.VISIBLE);
+        outState.putString(SAVED_DIALOG_APPID, registerDialog.getEtAppId().getText().toString());
+        outState.putBoolean(SAVED_DIALOG_VISIBILITY, registerDialog.isVisible());
     }
 
     @Override
@@ -219,6 +242,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         preferences.edit().putLong(CACHE_TIMESTAMP, cachingTimestamp).apply();
+        registerDialog.dismiss();
         super.onDestroy();
     }
 

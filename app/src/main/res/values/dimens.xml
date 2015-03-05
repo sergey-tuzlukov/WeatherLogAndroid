@@ -43,6 +43,8 @@
     <dimen name="horizontal_zero_label_margin_right">4dp</dimen>
 
     <dimen name="text_vertical_margin">8dp</dimen>
+    <dimen name="button_inner_vertical_margin">4dp</dimen>
+    <dimen name="dialog_inner_margin">8dp</dimen>
 
     <dimen name="logo_size">160dp</dimen>
 </resources>

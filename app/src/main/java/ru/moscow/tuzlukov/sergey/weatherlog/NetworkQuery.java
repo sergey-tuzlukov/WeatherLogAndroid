@@ -50,6 +50,7 @@ public class NetworkQuery {
     private static NetworkQuery ourInstance;
 
     private RequestQueue queue;
+    private String appId = "";
 
 
     private NetworkQuery(Context context) {
@@ -65,12 +66,17 @@ public class NetworkQuery {
 
     public void addRequest(String url, Params params, Response.Listener<JSONObject> responseListener,
                            Response.ErrorListener errorResponseListener, Object tag) {
-        queue.add(new JsonObjectRequest(BASE_URL + url + "?" + params, null, responseListener, errorResponseListener)
+        queue.add(new JsonObjectRequest(BASE_URL + url + "?" + (appId.isEmpty() ? params : params.addParam(Params.APPID, appId)),
+                null, responseListener, errorResponseListener)
                 .setShouldCache(true).setTag(tag));
     }
 
     public void cancelAllRequests(Object tag) {
         queue.cancelAll(tag);
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId == null ? "" : appId;
     }
 
 
@@ -80,6 +86,7 @@ public class NetworkQuery {
         public static final String END = "end";
         public static final String ID = "id";
         public static final String QUERY = "q";
+        public static final String APPID = "APPID";
 
         public static final String TYPE_HOUR = "hour";
         public static final String TYPE_LIKE = "like";
