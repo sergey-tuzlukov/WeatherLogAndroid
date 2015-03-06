@@ -47,11 +47,24 @@
     <string name="no_data_error_message">No weather data found for current city.</string>
 
     <string name="title_activity_settings">WeatherLog settings</string>
-    <string name="current_city_selected_label">Current city: %1$s [%2$s]\ncity_id=%3$d\n{lat=%4$.6f; lon=%5$.6f}</string>
+    <string name="register_appid_label">Register and enter the key&#8230;</string>
+    <string name="current_appid_caption">Your APPID on OpenWeatherMap:</string>
+    <string name="current_city_selected_label">Current city: %1$s [%2$s]\ncity_id=%3$d {lat=%4$.6f; lon=%5$.6f}</string>
     <string name="find_city_label">Find city (use English)</string>
     <string name="find_city_hint">City name, full or part</string>
     <string name="no_city_found_error_message">No city found for your query</string>
     <string name="city_changed_message">City changed</string>
+
+    <string name="title_dialog_register">Register the key</string>
+    <string name="register_procedure_description_text"><a href="http://openweathermap.org/register">Register on OpenWeatherMap</a> to get
+        your personal APPID key (it is free).\n\nAfter registration, copy the key from <a href="http://openweathermap.org/my">your account page</a>,
+        paste it into the field in this dialog and press \"Save the key\" button.\n\nYou can also continue using this app without registration;
+        later on you can enter or change the key via menu \"Settings\".
+        \n\n<b><i>Attention!</i></b> Unregistered users may encounter a difficulties with server responsibility and precision of gained data.
+    </string>
+    <string name="enter_key_hint">Enter the APPID key here</string>
+    <string name="button_dialog_save">Save the key</string>
+    <string name="button_dialog_skip">Enter the key later</string>
 
     <string name="title_activity_about">About WeatherLog</string>
     <string name="description_text"><b>WeatherLog</b> is an app that shows, how changed an air temperature within previous 24 hours.

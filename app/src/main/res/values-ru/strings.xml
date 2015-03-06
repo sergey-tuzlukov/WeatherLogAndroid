@@ -47,11 +47,24 @@
     <string name="no_data_error_message">Нет данных о погоде для выбранного города.</string>
 
     <string name="title_activity_settings">Настройки WeatherLog</string>
-    <string name="current_city_selected_label">Текущий город: %1$s [%2$s]\ncity_id=%3$d\n{lat=%4$.6f; lon=%5$.6f}</string>
+    <string name="register_appid_label">Регистрация и ввод ключа&#8230;</string>
+    <string name="current_appid_caption">Ваш APPID на OpenWeatherMap:</string>
+    <string name="current_city_selected_label">Текущий город: %1$s [%2$s]\ncity_id=%3$d {lat=%4$.6f; lon=%5$.6f}</string>
     <string name="find_city_label">Найти город (используйте английский)</string>
     <string name="find_city_hint">Название города, полностью или частично</string>
     <string name="no_city_found_error_message">По Вашему запросу ничего не найдено</string>
     <string name="city_changed_message">Город изменён</string>
+
+    <string name="title_dialog_register">Регистрация ключа</string>
+    <string name="register_procedure_description_text"><a href="http://openweathermap.org/register">Зарегистрируйтесь на OpenWeatherMap</a>
+        для получения вашего персонального ключа APPID (это бесплатно).\n\nПосле регистрации скопируйте полученный ключ из
+        <a href="http://openweathermap.org/my">своего личного кабинета</a>, вставьте его в текстовое поле в этом окне и нажмите \"Сохранить ключ\".
+        \n\nВы можете продолжить пользоваться приложением без регистрации; в дальнейшем ввести или изменить ключ можно из меню \"Настройки\".
+        \n\n<b><i>Внимание!</i></b> Незарегистрированные пользователи могут испытывать проблемы с доступностью сервера и точностью получаемых данных.
+    </string>
+    <string name="enter_key_hint">Введите ключ APPID сюда</string>
+    <string name="button_dialog_save">Сохранить ключ</string>
+    <string name="button_dialog_skip">Ввести ключ позднее</string>
 
     <string name="title_activity_about">О WeatherLog</string>
     <string name="description_text"><b>WeatherLog</b> это приложение, которое показывает, как менялась температура воздуха за прошедшие 24 часа. 

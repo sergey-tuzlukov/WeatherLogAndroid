@@ -56,6 +56,22 @@
         android:paddingBottom="@dimen/activity_vertical_margin">
 
         <TextView
+            android:id="@+id/tvRegisterAppId"
+            android:text="@string/register_appid_label"
+            android:clickable="true"
+            android:singleLine="true"
+            android:background="@drawable/bg_find_button"
+            android:padding="@dimen/button_inner_vertical_margin"
+            android:textColor="?android:attr/textColorLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View android:layout_width="match_parent" android:layout_height="2dp"
+              android:layout_marginTop="@dimen/text_vertical_margin"
+              android:layout_marginBottom="@dimen/text_vertical_margin"
+              android:background="@color/horizontal_separator_line_color"/>
+
+        <TextView
             android:id="@+id/tvSelectedCityInfo"
             android:text="@string/current_city_selected_label"
             android:textStyle="bold"

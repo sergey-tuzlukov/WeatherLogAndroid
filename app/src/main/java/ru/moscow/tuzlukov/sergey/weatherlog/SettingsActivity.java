@@ -28,12 +28,17 @@
 
 package ru.moscow.tuzlukov.sergey.weatherlog;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -69,14 +74,18 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
     private static final String SAVED_MESSAGE_VISIBILITY = "SAVED_MESSAGE_VISIBILITY";
     private static final String SAVED_RESULT_CODE = "SAVED_RESULT_CODE";
     private static final String SAVED_LOADER_VISIBILITY = "SAVED_LOADER_VISIBILITY";
+    private static final String SAVED_DIALOG_APPID = "SAVED_DIALOG_APPID";
+    private static final String SAVED_DIALOG_VISIBILITY = "SAVED_DIALOG_VISIBILITY";
 
     private SharedPreferences preferences;
     private NetworkQuery networkQuery;
     private int resultCode = RESULT_CANCELED;
     private static boolean refreshWasCancelled;
+    private RegisterDialog registerDialog;
 
     private List<City> cityList = new ArrayList<>();
 
+    private TextView tvRegisterAppId;
     private TextView tvSelectedCityInfo;
     private EditText etCityName;
     private ImageButton ibSearch;
@@ -90,6 +99,7 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        tvRegisterAppId = (TextView) findViewById(R.id.tvRegisterAppId);
         tvSelectedCityInfo = (TextView) findViewById(R.id.tvSelectedCityInfo);
         etCityName = (EditText) findViewById(R.id.etCityName);
         ibSearch = (ImageButton) findViewById(R.id.ibSearch);
@@ -99,7 +109,27 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
 
         preferences = getSharedPreferences("preferences", MODE_PRIVATE);
         networkQuery = NetworkQuery.getInstance(getApplicationContext());
+        registerDialog = new RegisterDialog(this, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String appId = registerDialog.getEtAppId().getText().toString().trim();
+                networkQuery.setAppId(appId);
+                preferences.edit().putString(NetworkQuery.Params.APPID, appId).apply();
+                resultCode = RESULT_OK;
+                setResult(resultCode);
+                if (!appId.isEmpty())
+                    tvRegisterAppId.setText(getString(R.string.current_appid_caption) + " " + appId);
+                else
+                    tvRegisterAppId.setText(getString(R.string.register_appid_label));
+            }
+        });
 
+        String appId = preferences.getString(NetworkQuery.Params.APPID, "");
+        if (!appId.isEmpty()) {
+            tvRegisterAppId.setText(getString(R.string.current_appid_caption) + " " + appId);
+            registerDialog.getEtAppId().setText(appId);
+            //networkQuery.setAppId();
+        }
         tvSelectedCityInfo.setText(String.format(getString(R.string.current_city_selected_label),
                 preferences.getString("city", NetworkQuery.Defaults.CITY_NAME),
                 preferences.getString("country", NetworkQuery.Defaults.CITY_COUNTRY),
@@ -109,6 +139,13 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
         ibSearch.setOnClickListener(this);
         lvVariants.setOnItemClickListener(this);
         etCityName.setOnEditorActionListener(this);
+        tvRegisterAppId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerDialog.getEtAppId().setText(preferences.getString(NetworkQuery.Params.APPID, ""));
+                registerDialog.show();
+            }
+        });
 
         if (savedInstanceState != null) {
             etCityName.setText(savedInstanceState.getString(SAVED_CITY_NAME_REQUESTED));
@@ -121,6 +158,10 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
             boolean refreshWasRun = savedInstanceState.getBoolean(SAVED_LOADER_VISIBILITY) || refreshWasCancelled;
             if (refreshWasRun)
                 onClick(etCityName);
+            if (savedInstanceState.getBoolean(SAVED_DIALOG_VISIBILITY)) {
+                registerDialog.getEtAppId().setText(savedInstanceState.getString(SAVED_DIALOG_APPID));
+                registerDialog.show();
+            }
         }
     }
 
@@ -134,6 +175,8 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
         outState.putBoolean(SAVED_MESSAGE_VISIBILITY, tvErrorMessage.getVisibility() == View.VISIBLE);
         outState.putInt(SAVED_RESULT_CODE, resultCode);
         outState.putBoolean(SAVED_LOADER_VISIBILITY, llLoader.getVisibility() == View.VISIBLE);
+        outState.putString(SAVED_DIALOG_APPID, registerDialog.getEtAppId().getText().toString());
+        outState.putBoolean(SAVED_DIALOG_VISIBILITY, registerDialog.isVisible());
     }
 
     @Override
@@ -151,6 +194,12 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
             refreshWasCancelled = true;
             llLoader.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        registerDialog.dismiss();
+        super.onDestroy();
     }
 
     @Override
@@ -312,6 +361,45 @@ public class SettingsActivity extends ActionBarActivity implements View.OnClickL
                 return new City[size];
             }
         };
+    }
+
+
+    public static class RegisterDialog {
+        private AlertDialog dialog;
+        private EditText etAppId;
+
+        public RegisterDialog(Activity activity, DialogInterface.OnClickListener positiveClickListener) {
+            View view = activity.getLayoutInflater().inflate(R.layout.dialog_register, null);
+            TextView tvRegisterProcedureDescription = (TextView) view.findViewById(R.id.tvRegisterProcedureDescription);
+            Linkify.addLinks(tvRegisterProcedureDescription, Linkify.WEB_URLS);
+            tvRegisterProcedureDescription.setMovementMethod(LinkMovementMethod.getInstance());
+            etAppId = (EditText) view.findViewById(R.id.etAppId);
+            dialog = new AlertDialog.Builder(activity).setTitle(R.string.title_dialog_register).setView(view)
+                    .setPositiveButton(R.string.button_dialog_save, positiveClickListener)
+                    .setNegativeButton(R.string.button_dialog_skip, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    })
+                    .create();
+        }
+
+        public void show() {
+            dialog.show();
+        }
+
+        public void dismiss() {
+            if (dialog != null && dialog.isShowing())
+                dialog.dismiss();
+        }
+
+        public EditText getEtAppId() {
+            return etAppId;
+        }
+
+        public boolean isVisible() {
+            return dialog.isShowing();
+        }
     }
 
 }
