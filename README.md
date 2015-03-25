@@ -1,4 +1,6 @@
 # WeatherLog
+<p><b>ATTENTION! Because of unexpected disfunction of OpenWeatherMap service this application (in fact, its client) cannot retrieve any data for all cities now. Without weather provider, that giving actual and correct information, this app does not work. Unfortunately, there is no way, known for me, to get historical weather data, within the limits of this application's architecture and GPL restrictions. Thus, development was stopped for sine die.<br/>Distribution on Google Play was also stopped, links become unavailable.<br/>The sources on github and apk-files on F-droid stay available as before (for informational purposes, at least).</b></p>
+
 <p>WeatherLog is an app for Android that shows, how changed an air temperature within previous 24 hours.<br/>
 The application helps to answer, if the road was icing up after cold night; is it a time 
 to change tires to/from winter ones; what kind of clothes or shoes would be well to wear today. 
